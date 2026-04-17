@@ -2,17 +2,17 @@
 
 **A Single-Rater Pilot Study on Feasibility, Feature Importance, and the Dominance of Spatial–Kinematic Signal**
 
-This repository accompanies the manuscript submitted to *Sports Medicine – Open* (Springer) and contains the complete pipeline for tracking a single target performer through cluttered multi-person competition footage, extracting ten interpretable multimodal features per routine, and evaluating seven regularised regressors under Repeated 5-Fold cross-validation with SHAP and leave-one-dimension-out ablation analyses.
+This repository accompanies the manuscript submitted to *Sports Medicine – Open* (Springer). It holds the full pipeline: tracking one target performer through cluttered multi-person competition footage, extracting ten interpretable multimodal features per routine, and evaluating seven regularised regressors under Repeated 5-Fold cross-validation with SHAP and leave-one-dimension-out ablation.
 
 ---
 
 ## Abstract
 
-Competitive hip-hop dance is contested at major international championships but lacks a unified international scoring standard and suffers from documented inter-judge reliability problems on subjective sub-criteria. Preliminary auditions, battle heats, and showcase rounds also pose a computer-vision challenge that off-the-shelf multi-person pose pipelines cannot address: a cluttered, multi-person background from which a single target performer must be isolated for reliable skeletal tracking.
+Competitive hip-hop is contested at major international championships but has no unified international scoring standard and has documented inter-judge reliability problems on subjective sub-criteria. Preliminary auditions, battle heats, and showcase rounds also pose a computer-vision challenge that off-the-shelf multi-person pose pipelines cannot handle: a cluttered, multi-person background from which a single target performer must be isolated for reliable skeletal tracking.
 
-This pilot study develops and evaluates a semi-automated, multimodal, hand-crafted pipeline that approximates the scores of one experienced Chinese hip-hop judge across 100 Bilibili competition clips. A cascaded YOLO11–SAM2 vision stack (initialised with a single manual click per video) produces per-frame skeletal keypoints robust to the cluttered multi-person background; `librosa` onset detection extracts beat timestamps from the synchronised audio. Ten interpretable features are engineered across three dimensions (Technique × 3, Musicality × 3, Space Control × 4) and evaluated under Repeated 5-Fold cross-validation (10 repeats × 5 folds = 50 total folds) across seven regularised regressors. Model differences are assessed by Friedman and paired t-tests, feature importance by SHAP, and subdimension contributions by leave-one-dimension-out ablation.
+This pilot develops and evaluates a semi-automated, multimodal, hand-crafted pipeline that approximates the scores of one experienced Chinese hip-hop judge across 100 Bilibili competition clips. A cascaded YOLO11–SAM2 vision stack, initialised with a single manual click per video, produces per-frame skeletal keypoints robust to the cluttered multi-person background, and `librosa` onset detection extracts beat timestamps from the synchronised audio. Ten interpretable features are engineered across three dimensions (Technique × 3, Musicality × 3, Space Control × 4) and evaluated under Repeated 5-Fold cross-validation (10 repeats × 5 folds = 50 total folds) across seven regularised regressors. Model differences are assessed by Friedman and paired t-tests, feature importance by SHAP, and subdimension contributions by leave-one-dimension-out ablation.
 
-**Results.** Random Forest achieves the lowest mean absolute error (MAE = 5.06 ± 0.58) and highest mean R² (+0.10), corresponding to less than one label standard deviation on the observed label range (58–86, σ = 6.7) and within the magnitude of inter-rater disagreement reported in adjacent aesthetic-sport literature. SHAP attribution and ablation converge on the same dimension-level ranking: Space Control features occupy three of the top four SHAP positions and, when removed, increase MAE by +0.295 points. Hand-crafted onset-matching musicality features, on the present single-rater sample with unprocessed broadcast audio, behave as noise (removing them *improves* MAE by 0.061 points).
+**Results.** Random Forest achieves the lowest mean absolute error (MAE = 5.06 ± 0.58) and the highest mean R² (+0.10), a gap smaller than one label standard deviation on the observed range (58–86, σ = 6.7) and comparable to the inter-rater disagreement reported for adjacent aesthetic sports. SHAP and ablation return the same dimension-level ranking: Space Control features hold three of the top four SHAP positions and, when removed, raise MAE by +0.295 points. On this single-rater sample with unprocessed broadcast audio, hand-crafted onset-matching musicality features behave as noise — removing them *reduces* MAE by 0.061 points.
 
 ---
 
@@ -47,7 +47,7 @@ This pilot study develops and evaluates a semi-automated, multimodal, hand-craft
 
 ## Data
 
-**Primary video corpus (not included in this repository).** One hundred competitive hip-hop performances (1080p, 30 fps, 40–60 s) were self-collected from publicly available footage on Bilibili (https://www.bilibili.com) covering preliminary audition rounds and related multi-person hip-hop competition events. Because the videos are third-party broadcast material released by the respective event organisers, and because the dataset is too large to version-control on GitHub, the raw videos are not redistributed here. Please contact the corresponding author for access arrangements if needed for strict replication.
+**Primary video corpus (not included in this repository).** One hundred competitive hip-hop performances (1080p, 30 fps, 40–60 s) were self-collected from publicly available footage on Bilibili (https://www.bilibili.com) covering preliminary audition rounds and related multi-person hip-hop competition events. The videos are third-party broadcast material released by the respective event organisers, and the dataset is too large to version-control on GitHub, so the raw videos are not redistributed here. Contact the corresponding author for access arrangements if you need strict replication.
 
 **Provided in `data/`.**
 
@@ -87,8 +87,8 @@ This pilot study develops and evaluates a semi-automated, multimodal, hand-craft
 
 ```bash
 # 1. Clone the repository.
-git clone https://github.com/<user>/<repo>.git
-cd <repo>
+git clone https://github.com/liangdagongjue-code/multimodal-hiphop-scoring.git
+cd multimodal-hiphop-scoring
 
 # 2. Create an isolated environment (conda or venv, Python 3.10+).
 python -m venv .venv
@@ -109,7 +109,7 @@ pip install git+https://github.com/facebookresearch/sam2.git
 
 ## Reproducing the results
 
-The pipeline is split into ten numbered stages (`src/01_*.py` through `src/10_*.py`). Each stage reads from and writes to absolute paths defined in its own `Configuration` block at the top of the file — edit those paths once to point to your local layout before running. Stages 1–2 are required only if you start from raw video; stages 3–7 regenerate `final_training_dataset.csv`; stages 8–10 are sufficient to reproduce the manuscript's numbers from the provided CSVs.
+The pipeline is split into ten numbered stages (`src/01_*.py` through `src/10_*.py`). Each stage reads from and writes to absolute paths defined in its own `Configuration` block at the top of the file — edit those paths to point to your local layout before running. Stages 1–2 are needed only if you start from raw video; stages 3–7 regenerate `final_training_dataset.csv`; stages 8–10 alone reproduce the manuscript's numbers from the CSVs provided here.
 
 ### Full pipeline (starting from 100 raw videos)
 
@@ -146,12 +146,12 @@ python src/10_plot_figures.py
 
 ## Key design decisions
 
-- **Single manual click per video (stage 1).** In cluttered multi-person competition frames (5–20 persons), purely automatic multi-object trackers (e.g. ByteTrack, BoT-SORT) drift between identities, which directly contaminates every downstream feature. One human click amortised over 40–60 s is a negligible annotation cost relative to the stability it guarantees.
-- **SAM2 for identity, YOLO-pose for joints (stage 1).** SAM2's mask propagation is robust to extreme articulation and brief occlusion; YOLO11s-pose provides a strong backbone for keypoint regression. An IoU ≥ 0.1 gate between SAM2's silhouette-tight box and YOLO's looser person box accepts modest mismatch while rejecting non-target skeletons.
-- **`librosa.onset.onset_detect` over `beat_track` (stage 4).** Hip-hop track percussion frequently violates the steady-tempo assumption that periodic beat trackers exploit.
-- **Winsorisation rather than outlier removal (stage 8).** Clipping the 10 AI features to their 1%/99% percentiles preserves the n = 100 sample size. Expert Likert scores and the weighted total label are *not* clipped.
-- **Strong regularisation and no grid search (stage 9).** On a 100-sample dataset an exhaustive hyperparameter search is dominated by partitioning noise; we fix a single small-n-safe configuration per model.
-- **MAE as the primary metric.** On a noisy subjective target, `R²` ceilings are dictated by label noise; mean absolute error in the same units as the 100-point reference score is the more appropriate yardstick.
+- **One manual click per video (stage 1).** In frames with 5–20 persons, fully automatic multi-object trackers (ByteTrack, BoT-SORT) switch identity whenever the target is briefly occluded, which contaminates every downstream feature. One click over a 40–60 s clip costs almost nothing and keeps identity stable for the whole round.
+- **SAM2 for identity, YOLO-pose for joints (stage 1).** SAM2 mask propagation is robust to extreme articulation and brief occlusion; YOLO11s-pose is a strong backbone for keypoint regression. An IoU ≥ 0.1 gate between SAM2's silhouette-tight box and YOLO's looser person box tolerates modest mismatch while rejecting non-target skeletons.
+- **`librosa.onset.onset_detect` over `beat_track` (stage 4).** Hip-hop track percussion often violates the steady-tempo assumption that periodic beat trackers exploit.
+- **Winsorisation rather than outlier removal (stage 8).** Clipping the 10 AI features to their 1%/99% percentiles preserves the n = 100 sample size. Expert Likert scores and the weighted total label are *not* clipped — trimming the tails of rater decisions would distort the reference distribution.
+- **Strong regularisation and no grid search (stage 9).** On a 100-sample dataset an exhaustive hyperparameter search is dominated by partitioning noise, so we fix one small-n-safe configuration per model.
+- **MAE as the primary metric.** On a noisy subjective target, `R²` is capped by label noise; mean absolute error in the same units as the 100-point reference score is the more appropriate yardstick.
 
 ---
 
@@ -172,7 +172,7 @@ python src/10_plot_figures.py
 
 ## Limitations
 
-This is a **single-rater pilot study**. Labels are provided by one experienced Chinese hip-hop judge; inter-rater reliability (intraclass correlation coefficient, ICC) is therefore not estimable on the present data, and all results should be read as conditional on one rater's scoring behaviour. Multi-rater replication with at least three independent judges and reported ICC values is identified as the primary follow-up this pilot enables. The pipeline also uses 2D pose only (Z-axis information is discarded by the monocular camera), raw broadcast audio without source separation, and a 30 fps sampling rate that marginally undersamples pops / hits / isolations. See the Limitations section of the manuscript for a full discussion.
+This is a **single-rater pilot study**. Labels come from one experienced Chinese hip-hop judge, so inter-rater reliability (intraclass correlation coefficient, ICC) cannot be estimated here, and all results should be read as conditional on one rater's scoring behaviour. The priority follow-up this pilot enables is a multi-rater replication with at least three independent judges and reported ICC values. The pipeline also uses 2D pose only (the Z-axis is lost under a monocular camera), raw broadcast audio without source separation, and a 30 fps sampling rate that marginally undersamples pops / hits / isolations. The manuscript's Limitations section covers these in full.
 
 ---
 

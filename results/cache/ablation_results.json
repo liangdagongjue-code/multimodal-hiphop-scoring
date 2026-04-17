@@ -1,0 +1,17 @@
+{
+  "Technique": {
+    "ablated_mae": 5.112114038467198,
+    "ablated_r2": 0.07601907926998033,
+    "mae_increase": 0.057273191114028066
+  },
+  "Musicality": {
+    "ablated_mae": 4.993804715761269,
+    "ablated_r2": 0.11489550648550771,
+    "mae_increase": -0.061036131591901466
+  },
+  "Space Control": {
+    "ablated_mae": 5.349474560896446,
+    "ablated_r2": 0.01964388988151673,
+    "mae_increase": 0.2946337135432753
+  }
+}

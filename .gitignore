@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Model weights (should be downloaded separately; see README)
+*.pt
+*.pth
+*.onnx
+*.ckpt
+checkpoints/
+
+# Large video / audio data (not tracked in Git; see README for data sourcing)
+*.mp4
+*.mov
+*.avi
+*.wav
+*.mp3
+
+# Intermediate per-video arrays (regenerable from the pipeline)
+*.npy
+*.npz
+Aligned_Audio/
+Aligned_Keypoints/
+StreetDance_Cleaned/
+StreetDance_Keypoints/
+
+# Intermediate per-dimension feature CSVs (regenerable)
+Technique_Features.csv
+Musicality_Features.csv
+Space_Control_Features.csv
+Master_Dance_Features.csv
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk

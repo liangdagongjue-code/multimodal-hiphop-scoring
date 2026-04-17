@@ -1,0 +1,11 @@
+Feature,SHAP_Importance
+Convex Hull Coverage,1.1484991892951475
+CoG Total Distance,0.6554902090164536
+Max Opening Angle,0.5846383855374239
+Peak-Trough Control,0.5380490342153004
+Limb Explosiveness,0.38457653692870847
+Kinetic Energy CV,0.1455744015948919
+Beat Avg Error (s),0.11516954541666018
+Beat Hit Rate,0.043921479699306536
+Beat Variance,0.04325802128568552
+Handstand Floor Ratio,0.0
